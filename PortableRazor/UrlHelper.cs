@@ -52,10 +52,14 @@ namespace PortableRazor.Web.Mvc
 				return String.Empty;
 
 			var qs = new StringBuilder ();
-			foreach (var property in routeValues.GetType ().GetRuntimeProperties()) 
-				qs.AppendFormat ("&{0}={1}", property.Name, property.GetMethod.Invoke (routeValues, null));
+			foreach (var property in routeValues.GetType ().GetRuntimeProperties())
+            {
+                string urlEncodedValue = System.Net.WebUtility.UrlEncode(property.GetMethod.Invoke(routeValues, null).ToString());
+                qs.AppendFormat("&{0}={1}", property.Name, urlEncodedValue);
 
-			if (qs.Length == 0)
+            }
+
+            if (qs.Length == 0)
 				return String.Empty;
 
 			return qs.ToString (1, qs.Length - 1);

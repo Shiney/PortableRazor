@@ -20,8 +20,11 @@ namespace PortableRazor.Web.Mvc
 		private string GenerateHtmlAttributes(object htmlAttributes) {
 			var attrs = new StringBuilder ();
 			if (htmlAttributes != null) {
-				foreach (var property in htmlAttributes.GetType ().GetRuntimeProperties()) 
-					attrs.AppendFormat (@" {0}=""{1}""", property.Name.Replace('_', '-'), property.GetMethod.Invoke (htmlAttributes, null));
+                foreach (var property in htmlAttributes.GetType().GetRuntimeProperties())
+                {
+                    string htmlEncodedValue = System.Net.WebUtility.HtmlEncode(property.GetMethod.Invoke(htmlAttributes, null).ToString());
+                    attrs.AppendFormat(@" {0}=""{1}""", property.Name.Replace('_', '-'), htmlEncodedValue);
+                }
 			}
 			return attrs.ToString ();
 		}
